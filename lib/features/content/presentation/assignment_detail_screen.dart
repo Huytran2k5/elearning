@@ -323,7 +323,6 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
           }
         }
       } catch (e) {
-        print("Lỗi map ID: $e");
       }
 
       // 3. Tạo Submission

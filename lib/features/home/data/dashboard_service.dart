@@ -48,7 +48,6 @@ class DashboardService {
         pendingGrades: pendingCountQuery.docs.length,
       );
     } catch (e) {
-      print("Lỗi lấy thống kê: $e");
       // Trả về 0 hết nếu lỗi (hoặc mất mạng)
       return DashboardStats(activeCourses: 0, totalStudents: 0, totalAssignments: 0, pendingGrades: 0);
     }

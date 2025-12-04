@@ -18,7 +18,6 @@ class CloudinaryService {
       );
       return result?.files.first;
     } catch (e) {
-      print("File selection error: $e");
       return null;
     }
   }
@@ -33,7 +32,6 @@ class CloudinaryService {
       if (kIsWeb) {
         // On Web: Use bytes
         if (platformFile.bytes == null) {
-          print("❌ Error: File bytes is null (Web)");
           return null;
         }
         request.files.add(
@@ -46,7 +44,6 @@ class CloudinaryService {
       } else {
         // On Mobile/Desktop: Use path
         if (platformFile.path == null) {
-          print("❌ Error: File path is null (Native)");
           return null;
         }
         request.files.add(await http.MultipartFile.fromPath('file', platformFile.path!));
@@ -54,22 +51,17 @@ class CloudinaryService {
       // ------------------------------------------
 
       request.fields['upload_preset'] = uploadPreset;
-
-      print("📤 Uploading...");
       final response = await request.send();
       final responseData = await response.stream.toBytes();
       final responseString = String.fromCharCodes(responseData);
 
       if (response.statusCode == 200) {
         final jsonMap = jsonDecode(responseString);
-        print("✅ Upload successful!");
         return jsonMap['secure_url'];
       } else {
-        print("❌ Upload failed: ${response.statusCode} - $responseString");
         return null;
       }
     } catch (e) {
-      print("❌ Exception error: $e");
       return null;
     }
   }

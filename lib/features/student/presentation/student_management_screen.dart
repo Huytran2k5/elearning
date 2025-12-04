@@ -105,7 +105,6 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> with 
         successCount++;
       } catch (e) {
         failCount++;
-        print("Lỗi import ${item.user.email}: $e");
       }
     }
 

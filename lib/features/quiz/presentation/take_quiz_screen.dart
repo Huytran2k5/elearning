@@ -63,7 +63,6 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           realStudentId = userQuery.docs.first.id;
           realStudentName = data['displayName'] ?? "Student";
           realStudentCode = data['studentCode'] ?? ""; // <--- Lấy mã SV từ DB
-          print("✅ Quiz mapped: $realStudentId | Code: $realStudentCode");
         }
       }
       // --------------------------------------

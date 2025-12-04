@@ -57,7 +57,6 @@ class SyncQueueService {
 
     await prefs.setString(
         _queueKey, jsonEncode(queue.map((e) => e.toJson()).toList()));
-    print('📥 Queued [$type] - ID: ${action.id}');
   }
 
   /// Get current queue
@@ -70,7 +69,6 @@ class SyncQueueService {
       List<dynamic> list = jsonDecode(data);
       return list.map((e) => PendingAction.fromJson(e)).toList();
     } catch (e) {
-      print('❌ Error reading queue: $e');
       return [];
     }
   }
@@ -85,11 +83,8 @@ class SyncQueueService {
   Future<void> processQueue() async {
     final queue = await _getQueue();
     if (queue.isEmpty) {
-      print('✅ Queue is empty');
       return;
     }
-
-    print('🔄 Processing ${queue.length} pending action(s)...');
 
     int successCount = 0;
     int failCount = 0;
@@ -99,20 +94,15 @@ class SyncQueueService {
         await _executeAction(action);
         await _removeFromQueue(action.id);
         successCount++;
-        print('✅ Synced [${action.type}] - ID: ${action.id}');
       } catch (e) {
         failCount++;
-        print('❌ Failed [${action.type}] - ID: ${action.id} - Error: $e');
 
         // Remove action if older than 7 days (avoid infinite retry)
         if (DateTime.now().difference(action.timestamp).inDays > 7) {
           await _removeFromQueue(action.id);
-          print('🗑️ Removed stale action: ${action.id}');
         }
       }
     }
-
-    print('🎉 Sync completed: $successCount success, $failCount failed');
   }
 
   /// Execute a single action based on type
@@ -131,7 +121,7 @@ class SyncQueueService {
         break;
 
       default:
-        print('⚠️ Unknown action type: ${action.type}');
+        break;
     }
   }
 
@@ -149,7 +139,6 @@ class SyncQueueService {
   Future<void> clearQueue() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_queueKey);
-    print('🗑️ Queue cleared');
   }
 
   // ==================== SYNC ACTIONS ====================

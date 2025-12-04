@@ -14,19 +14,11 @@ class NetworkService {
     // Check initial status
     InternetConnection().hasInternetAccess.then((hasAccess) {
       isOnline.value = hasAccess;
-      debugPrint(
-          '🌐 Initial network status: ${isOnline.value ? "ONLINE" : "OFFLINE"}');
     });
 
     // Listen for changes
     InternetConnection().onStatusChange.listen((status) {
-      final wasOnline = isOnline.value;
       isOnline.value = status == InternetStatus.connected;
-
-      if (wasOnline != isOnline.value) {
-        debugPrint(
-            '🌐 Network changed: ${isOnline.value ? "ONLINE ✅" : "OFFLINE ⚠️"}');
-      }
     });
   }
 

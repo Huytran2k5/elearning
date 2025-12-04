@@ -27,10 +27,9 @@ void main() async {
   final networkService = NetworkService();
   networkService.init();
 
-  // 🔄 Auto-sync when back online
+  // Auto-sync when back online
   networkService.isOnline.addListener(() {
     if (networkService.isOnline.value) {
-      print('🌐 Back online! Syncing pending actions...');
       SyncQueueService().processQueue();
     }
   });

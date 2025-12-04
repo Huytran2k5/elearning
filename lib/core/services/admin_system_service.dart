@@ -47,9 +47,7 @@ class AdminSystemService {
 
       // Send notification email via Firestore (Trigger Email Extension)
       await _sendWelcomeEmailViaFirestore(email, name, "123456");
-      print("✅ Account created for: $email");
     } catch (e) {
-      print("❌ Error creating student $email: $e");
       rethrow;
     }
     // Don't delete secondaryApp to reuse for next user in loop
@@ -120,9 +118,7 @@ Training & Student Affairs Department.
 '''
         },
       });
-      print('📧 Welcome email queued for $email');
     } catch (e) {
-      print('❌ Error queuing email: $e');
     }
   }
 
@@ -192,10 +188,7 @@ Best wishes for your studies!
 '''
         },
       });
-      print(
-          "📧 Assignment notification queued for ${recipients.length} students.");
     } catch (e) {
-      print('❌ Error queuing notification: $e');
     }
   }
 }

@@ -33,8 +33,6 @@ class StudentStatsService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<StudentStats> getStats(String studentId) async {
-    print("🔍 [STATS] Bắt đầu tính toán cho SV: $studentId");
-
     try {
       // 1. Lấy danh sách Enrollment
       final enrollments = await _db.collection(AppConstants.collEnrollments)
@@ -48,9 +46,6 @@ class StudentStatsService {
       for (var doc in enrollments.docs) {
         myGroupIds.add(doc['groupId']);
       }
-
-      print("🔍 [STATS] SV đang học trong ${myGroupIds.length} nhóm: $myGroupIds");
-
       if (myGroupIds.isEmpty) return _emptyStats();
 
       // 2. Lấy Bài tập (Assignments)
@@ -59,9 +54,6 @@ class StudentStatsService {
       final assignmentsSnap = await _db.collection(AppConstants.collAssignments)
           .where('courseId', whereIn: myGroupIds.take(10).toList())
           .get();
-
-      print("🔍 [STATS] Tìm thấy ${assignmentsSnap.docs.length} bài tập.");
-
       final allAssignments = assignmentsSnap.docs.map((d) => AssignmentModel.fromFirestore(d)).toList();
 
       // 3. Lấy Bài nộp (Submissions)
@@ -133,7 +125,6 @@ class StudentStatsService {
       );
 
     } catch (e) {
-      print("❌ [STATS ERROR]: $e");
       return _emptyStats();
     }
   }

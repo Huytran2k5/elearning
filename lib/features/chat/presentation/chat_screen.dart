@@ -45,25 +45,15 @@ class _ChatScreenState extends State<ChatScreen> {
         // AHA! Found matching Firestore record with email!
         // Use this record's ID instead of Auth UID
         myRealId = userQuery.docs.first.id;
-        // print("✅ Mapped AuthUID (${currentUser.uid}) -> FirestoreID ($myRealId)");
       } else {
-        print("⚠️ User not found in Firestore, using temporary AuthUID");
       }
     } catch (e) {
-      print("Error finding ID: $e");
     }
 
     // 3. Now create chat room ID using "myRealId"
     final id = await _chatService.getOrCreateConversationId(myRealId, widget.targetUserId);
 
     // --- DEBUG LOG ---
-    // print("🔴 CHAT DEBUG START ----------------");
-    // print("🔴 EMAIL: ${currentUser.email}");
-    // print("🔴 ME (Real Firestore ID): $myRealId");
-    // print("🔴 TARGET: ${widget.targetUserId}");
-    // print("🔴 ROOM ID: $id");
-    // print("🔴 ---------------------------------");
-
     if (mounted) setState(() => _conversationId = id);
   }
 

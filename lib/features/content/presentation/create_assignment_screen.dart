@@ -128,7 +128,6 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
         }
       }
     } catch (e) {
-      print("Lỗi gửi mail: $e");
     }
     // -------------------------------------
 

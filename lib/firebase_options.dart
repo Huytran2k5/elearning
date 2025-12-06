@@ -48,7 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAa_cTb2XqstnBalEfu_Il_QZk_lKqRuUk',
-    appId: '1:93919527769:web:e-learning-7351c',
+    appId: '1:93919527769:web:e5f83416a0e660cc6e8b01',
     messagingSenderId: '93919527769',
     projectId: 'e-learning-7351c',
     authDomain: 'e-learning-7351c.firebaseapp.com',
@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyAa_cTb2XqstnBalEfu_Il_QZk_lKqRuUk',
-    appId: '1:93919527769:web:e-learning-7351c',
+    appId: '1:93919527769:web:64e4874f9b624d326e8b01',
     messagingSenderId: '93919527769',
     projectId: 'e-learning-7351c',
     authDomain: 'e-learning-7351c.firebaseapp.com',

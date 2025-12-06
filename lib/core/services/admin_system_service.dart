@@ -47,7 +47,10 @@ class AdminSystemService {
 
       // Send notification email via Firestore (Trigger Email Extension)
       await _sendWelcomeEmailViaFirestore(email, name, "123456");
+
+      print('✅ Student account created successfully: $email');
     } catch (e) {
+      print('❌ Error creating student account for $email: $e');
       rethrow;
     }
     // Don't delete secondaryApp to reuse for next user in loop
@@ -57,12 +60,14 @@ class AdminSystemService {
   Future<void> _sendWelcomeEmailViaFirestore(
       String email, String name, String password) async {
     try {
-      await _db.collection('mail').add({
-        'to': [email],
+      print('📧 Attempting to send email to: $email');
+
+      final docRef = await _db.collection('mail').add({
+        'to': [email], // PHẢI là Array - bắt buộc cho Extension
+        // XÓA field 'from' và 'replyTo' - Extension sẽ dùng default từ cấu hình
         'message': {
           'subject': 'Welcome New Student - E-Learning Account',
-          'text': '''
-Hello $name,
+          'text': '''Hello $name,
 
 Your learning account has been successfully created on the E-Learning system.
 
@@ -75,12 +80,11 @@ Password: $password
 Please log in to the application and change your password immediately to secure your account.
 
 Best regards,
-Training & Student Affairs Department.
-''',
-          'html': '''
-<!DOCTYPE html>
+Training & Student Affairs Department.''',
+          'html': '''<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -93,32 +97,53 @@ Training & Student Affairs Department.
 <body>
   <div class="container">
     <div class="header">
-      <h1>🎓 IT E-Learning System</h1>
+      <h1>IT E-Learning System</h1>
     </div>
     <div class="content">
       <h2>Welcome, $name!</h2>
       <p>Your learning account has been successfully created on the E-Learning system.</p>
-      
       <div class="credentials">
         <strong>Login Information:</strong><br>
-        📧 Email: <strong>$email</strong><br>
-        🔑 Password: <strong>$password</strong>
+        Email: <strong>$email</strong><br>
+        Password: <strong>$password</strong>
       </div>
-      
-      <p>⚠️ <strong>Important:</strong> Please log in to the application and change your password immediately to secure your account.</p>
-      
-      <p>Best regards,<br>Training & Student Affairs Department</p>
+      <p><strong>Important:</strong> Please log in to the application and change your password immediately to secure your account.</p>
+      <p>Best regards,<br>Training &amp; Student Affairs Department</p>
     </div>
     <div class="footer">
       <p>This is an automated email from IT E-Learning System. Please do not reply.</p>
     </div>
   </div>
 </body>
-</html>
-'''
+</html>'''
         },
       });
+
+      print('✅ Email document created successfully with ID: ${docRef.id}');
+      print('📬 Email queued for: $email');
+      print('🔍 Check Firestore: mail/${docRef.id} for delivery status');
+
+      // Wait a bit and check delivery status
+      await Future.delayed(const Duration(seconds: 3));
+
+      final checkDoc = await _db.collection('mail').doc(docRef.id).get();
+      if (checkDoc.exists) {
+        final data = checkDoc.data();
+        if (data != null && data.containsKey('delivery')) {
+          final delivery = data['delivery'];
+          print('📊 Delivery status: ${delivery['state']}');
+          if (delivery['state'] == 'ERROR') {
+            print('❌ Delivery error: ${delivery['error']}');
+          } else if (delivery['state'] == 'SUCCESS') {
+            print('✅ Email sent successfully!');
+          }
+        } else {
+          print('⏳ Email still processing (no delivery status yet)');
+        }
+      }
     } catch (e) {
+      print('❌ Error sending email to $email: $e');
+      // Don't rethrow - email failure shouldn't stop account creation
     }
   }
 
@@ -188,7 +213,11 @@ Best wishes for your studies!
 '''
         },
       });
+
+      print(
+          '✅ Assignment notification email sent to ${recipients.length} recipients');
     } catch (e) {
+      print('❌ Error sending assignment notification: $e');
     }
   }
 }
